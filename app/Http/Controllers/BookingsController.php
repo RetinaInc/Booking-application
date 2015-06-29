@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Room;
+use App\Order;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -55,9 +56,30 @@ class BookingsController extends Controller {
 
     public function done(Request $request)
     {
-        $room = Room::where(['id' => $request->id])->first();
 
-        return view('booking.done', ['room' => $room, 'date' => $request->submit]);
+        $this->validate($request,
+            [
+                'startDate' => 'required',
+                'endDate'  => 'required',
+                'room'  => 'required',
+            ],
+            [
+                'startDate.required' => 'Incheckinings-datum måste anges!',
+                'endDate.required' => 'Utcheckinings-datum måste anges!',
+                'room.required'  => 'Rum måste väljas',
+            ]
+        );
+
+        Order::updateOrCreate(['id' => $request->submit], array(
+            'arrives'  => $request->startDate,
+            'departures'  => $request->endDate,
+            'roomid'  => $request->room
+            //'user'  => Auth::id()
+            ));
+
+        $room = Room::where(['id' => $request->room])->first();
+
+        return view('booking.done', ['room' => $room, 'startDate'  => $request->startDate, 'endDate'  => $request->endDate]);
     }
 
 }

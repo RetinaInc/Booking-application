@@ -21,10 +21,10 @@ Route::get('rooms/{id}/edit', 'RoomsController@edit');
 Route::get('rooms/', 'RoomsController@index');
 Route::get('rooms/{id}', 'RoomsController@show');
 
-Route::get('book/', 'BookingsController@index');
+Route::post('book', 'BookingsController@done');
+Route::get('book', 'BookingsController@index');
 Route::post('book/calendar', 'BookingsController@calendar');
 Route::post('book/room', 'BookingsController@room');
-Route::post('book/done', 'BookingsController@done');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',
